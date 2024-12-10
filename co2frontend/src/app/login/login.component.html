@@ -1,15 +1,35 @@
-<div class="background-image"></div>
 <div class="form-container">
-  <img src="https://cdn-icons-png.flaticon.com/512/236/236831.png" alt="Eco Icon" class="nature-icon">
-  <h2>Benvenuto in EcoLogin</h2>
-  <form>
-    <label for="username">Email:</label>
-    <input type="text" id="username" placeholder="Insert email">
+  <h2>Login</h2>
+  <form (ngSubmit)="onLogin()">
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Inserisci email"
+      required
+    />
 
     <label for="password">Password:</label>
-    <input type="password" id="password" placeholder="Insert password">
+    <input
+      type="password"
+      id="password"
+      [(ngModel)]="password"
+      name="password"
+      placeholder="Inserisci password"
+      required
+    />
 
     <button type="submit">Accedi</button>
+
+    <!-- Mostra il messaggio di errore solo se esiste -->
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
   </form>
-  <p>Non hai un account? <a routerLink="/register" style="color: #1b5e20; text-decoration: none;">Registrati</a></p>
+  <p>
+    Non hai un account?
+    <a routerLink="/register" style="color: #1b5e20; text-decoration: none;">
+      Registrati
+    </a>
+  </p>
 </div>

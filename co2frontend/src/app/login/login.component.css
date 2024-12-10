@@ -16,6 +16,13 @@ h2 {
   margin-bottom: 20px;
 }
 
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 label {
   display: block;
   margin: 10px 0 5px;
