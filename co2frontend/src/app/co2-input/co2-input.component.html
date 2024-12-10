@@ -1,0 +1,38 @@
+<div class="co2-input-container">
+  <h2>Inserisci il consumo di dati</h2>
+  <form (ngSubmit)="onSubmit()">
+    <!-- Input per il numero -->
+    <label for="data-amount">Consumo di dati:</label>
+    <input
+      type="number"
+      id="data-amount"
+      [(ngModel)]="dataAmount"
+      name="dataAmount"
+      placeholder="Inserisci il consumo"
+      required
+    />
+
+    <!-- Menu a tendina per l'unità -->
+    <label for="data-unit">Unità:</label>
+    <select
+      id="data-unit"
+      [(ngModel)]="dataUnit"
+      name="dataUnit"
+      required
+    >
+      <option value="Kb">Kb</option>
+      <option value="Mb">Mb</option>
+      <option value="Gb">Gb</option>
+    </select>
+
+    <!-- Pulsante di invio -->
+    <button type="submit">Calcola CO₂</button>
+  </form>
+
+  <!-- Mostra il risultato -->
+  <div class="result" *ngIf="co2Result !== null">
+    <h3>Risultato:</h3>
+    <p>Il tuo consumo di dati corrisponde a <strong class="co2-amount">{{ co2Result }} kg</strong> di CO₂.</p>
+    <p class="current-date">Calcolato il: <strong>{{ currentDate }}</strong></p>
+  </div>
+</div>

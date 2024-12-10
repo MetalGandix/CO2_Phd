@@ -1,0 +1,71 @@
+.form-container {
+  width: 50%;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to bottom, #e8f5e9, #c8e6c9); /* Gradienti di verde */
+  font-family: 'Arial', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #2e7d32; /* Verde naturale */
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #388e3c; /* Verde più scuro */
+}
+
+input {
+  width: 100%; /* Adatta l'input alla larghezza del contenitore */
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f1f8e9; /* Verde chiaro per input */
+  font-size: 1rem;
+  box-sizing: border-box; /* Includi padding e bordo nella larghezza */
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50; /* Verde */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+  background-color: #388e3c; /* Verde più scuro */
+  transform: scale(1.05);
+}
+
+p {
+  text-align: center;
+  color: #2e7d32;
+  font-size: 0.9rem;
+}
+
+/* .background-image { */
+  /* background: url('https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?fit=crop&w=1500&q=80') no-repeat center center; */
+  /* background-size: cover; */
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* width: 100%; */
+  /* height: 100%; */
+  /* z-index: -1; Sfondo posizionato dietro la pagina */
+  /* opacity: 0.8; Rende l'immagine più morbida */
+/* } */
