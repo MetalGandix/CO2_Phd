@@ -17,4 +17,30 @@ export class Co2Service {
       },
     });
   }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    });
+  }
+
+  
+  getAllCo2(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAllco2`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    });
+  }
+
+
+  getCo2ByUserId(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/co2/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    });
+  }
 }

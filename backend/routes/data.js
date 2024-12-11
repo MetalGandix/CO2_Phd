@@ -73,9 +73,9 @@ router.get('/users', authenticate, (req, res) => {
 });
 
 // Fetch CO2 data for the authenticated user
-router.get('/co2', authenticate, (req, res) => {
+router.get('/getAllco2', authenticate, (req, res) => {
   const query = `
-    SELECT id, co2_amount, date
+    SELECT id, co2_amount, date, user_id
     FROM co2_data
     WHERE user_id = ?
     ORDER BY date DESC
