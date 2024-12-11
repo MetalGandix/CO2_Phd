@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Co2Service } from '../co2.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-auth',
@@ -57,5 +59,21 @@ export class AuthComponent {
         console.error(`Error fetching CO2 data for user ${this.filterUserId}:`, error);
       }
     });
+  }
+
+  exportToExcel() {
+    // Combina utenti e dati CO₂ in un unico oggetto
+    const usersSheet = XLSX.utils.json_to_sheet(this.users);
+    const co2Sheet = XLSX.utils.json_to_sheet(this.co2Data);
+
+    // Crea un workbook e aggiungi i fogli
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, usersSheet, 'Users');
+    XLSX.utils.book_append_sheet(workbook, co2Sheet, 'CO2 Data');
+
+    // Scrive il file e lo scarica
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'Report_CO2_Tracker.xlsx');
   }
 }

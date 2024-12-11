@@ -17,6 +17,11 @@ export const routes: Routes = [
     loadComponent: () => import('./co2-input/co2-input.component').then((m) => m.Co2InputComponent),
     canActivate: [AuthGuard],
   },
+  {
+    path: 'myco2',
+    loadComponent: () => import('./myco2/myco2.component').then((m) => m.Myco2Component),
+    canActivate: [AuthGuard],
+  },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AuthComponent, canActivate: [AuthGuard] }, // Aggiunto AuthGuard
+  { path: 'admin', component: AuthComponent, canActivate: [AuthGuard] },
 ];

@@ -76,3 +76,20 @@
     margin-right: 10px;
   }
   
+  .table-container {
+    overflow-x: auto; /* Abilita lo scorrimento orizzontale */
+    -webkit-overflow-scrolling: touch; /* Supporto fluido per dispositivi touch */
+  }
+  
+  .table {
+    width: 100%; /* Assicura che la tabella occupi tutta la larghezza disponibile */
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .table th,
+  .table td {
+    text-align: left;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+  }

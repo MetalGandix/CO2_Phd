@@ -72,24 +72,24 @@ router.get('/users', authenticate, (req, res) => {
   });
 });
 
-// Fetch CO2 data for the authenticated user
+// Fetch all CO2 data
 router.get('/getAllco2', authenticate, (req, res) => {
   const query = `
     SELECT id, co2_amount, date, user_id
     FROM co2_data
-    WHERE user_id = ?
     ORDER BY date DESC
   `;
 
-  db.all(query, [req.userId], (err, rows) => {
+  db.all(query, [], (err, rows) => {
     if (err) {
-      console.error('Error fetching CO2 data:', err.message);
+      console.error('Error fetching all CO2 data:', err.message);
       return res.status(500).send('Error fetching data');
     }
 
-    res.status(200).json(rows); // Rispondi con i dati in formato JSON
+    res.status(200).json(rows); // Rispondi con tutti i dati in formato JSON
   });
 });
+
 
 
 // Fetch CO2 data for a specific user by user_id
