@@ -6,9 +6,16 @@
     <span></span>
   </div>
   <nav #nav>
-    <a routerLink="/login" routerLinkActive="active">Login</a>
-    <a routerLink="/register" routerLinkActive="active">Registrazione</a>
-    <a routerLink="/co2-input" routerLinkActive="active">Inserimento CO₂</a>
-    <a routerLink="/tips" routerLinkActive="active">Consigli</a>
+    <ng-container *ngIf="!isAuthenticated; else authenticated">
+      <!-- Visualizza per utenti non autenticati -->
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Registrazione</a>
+    </ng-container>
+    <ng-template #authenticated>
+      <!-- Visualizza per utenti autenticati -->
+      <a routerLink="/co2-input" routerLinkActive="active">Inserimento CO₂</a>
+      <a routerLink="/tips" routerLinkActive="active">Consigli</a>
+      <a (click)="logout()" style="cursor: pointer; text-decoration: none;">Logout</a>
+    </ng-template>
   </nav>
 </div>

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from 'express';
+import { AuthService } from '../auth.service';
+import { Co2Service } from '../co2.service';
 
 @Component({
   selector: 'app-co2-input',
@@ -22,27 +25,37 @@ export class Co2InputComponent {
     Gb: 20,
   };
 
+  constructor(private co2Service: Co2Service) {}
+
   onSubmit() {
     if (this.dataAmount !== null && this.dataUnit) {
-      // Conversione in CO2
       const conversionRate = this.conversionRates[this.dataUnit];
       this.co2Result = this.dataAmount * conversionRate;
-
-      // Ottieni la data corrente formattata
+  
       const now = new Date();
-      this.currentDate = now.toLocaleDateString();
-
-      // Crea un oggetto JSON con l'ID utente incluso
-      const resultJson = {
-        idUtente: this.userId, // Può essere null o popolato in seguito
-        valore: this.dataAmount,
-        unità: this.dataUnit,
-        CO2: this.co2Result,
-        data: this.currentDate,
+      this.currentDate = now.toISOString();
+  
+      const co2Data = {
+        user_id: sessionStorage.getItem('userId'),
+        co2_amount: this.co2Result,
+        date: this.currentDate,
       };
-
-      // Stampa l'oggetto JSON nel console log
-      console.log(resultJson);
+  
+      this.co2Service.saveCo2Data(co2Data).subscribe({
+        next: (response) => {
+          console.log('Dati salvati con successo:', response);
+          alert('Dati salvati con successo!');
+        },
+        error: (err) => {
+          console.error('Errore durante il salvataggio dei dati:', err);
+          // Gestisci messaggi non JSON
+          if (err.error instanceof Object) {
+            alert(`Errore: ${err.error.error || 'Errore sconosciuto'}`);
+          } else {
+            alert('Errore durante il salvataggio dei dati. Riprova.');
+          }
+        },
+      });
     } else {
       alert('Per favore, compila tutti i campi.');
     }

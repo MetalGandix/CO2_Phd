@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  errorMessage: string = ''; // Variabile per il messaggio di errore
+  errorMessage: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -29,9 +29,15 @@ export class LoginComponent {
     this.authService.login(loginData).subscribe({
       next: (response: any) => {
         console.log('Login successful:', response);
-        sessionStorage.setItem('authToken', response.token); // Salva il token nella sessione
-        this.errorMessage = ''; // Resetta il messaggio di errore
-        this.router.navigate(['/']); // Reindirizza alla home o a un'altra pagina
+
+        // Salva il token e l'ID utente nel sessionStorage
+        sessionStorage.setItem('authToken', response.token);
+        sessionStorage.setItem('userId', response.userId);
+
+        this.errorMessage = '';
+        this.router.navigate(['/co2-input']).then(() => {
+          window.location.reload(); // Ricarica la pagina per aggiornare la toolbar
+        });
       },
       error: (error) => {
         console.error('Errore durante il login:', error);

@@ -3,36 +3,115 @@ const jwt = require('jsonwebtoken');
 const db = require('../database');
 const router = express.Router();
 
-const SECRET_KEY = 'your_secret_key';
+const SECRET_KEY = 'co2secretkeyunimore';
 
 // Middleware to authenticate
 const authenticate = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).send('No token provided');
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(403).json({ error: 'No token provided' }); // Risposta JSON
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(403).json({ error: 'No token provided' }); // Risposta JSON
+  }
+
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(401).send('Failed to authenticate token');
+    if (err) {
+      return res.status(401).json({ error: 'Failed to authenticate token' }); // Risposta JSON
+    }
     req.userId = decoded.id;
     next();
   });
 };
 
+
 // Save CO2 data
 router.post('/co2', authenticate, (req, res) => {
   const { co2_amount } = req.body;
-  db.run('INSERT INTO co2_data (user_id, co2_amount) VALUES (?, ?)', [req.userId, co2_amount], function(err) {
-    if (err) return res.status(500).send('Error saving data');
-    res.status(201).send({ id: this.lastID });
+
+  // Ottieni la data corrente
+  const currentDate = new Date().toISOString();
+
+  // Inserimento nella tabella co2_data con data
+  const query = `
+    INSERT INTO co2_data (user_id, co2_amount, date)
+    VALUES (?, ?, ?)
+  `;
+  db.run(query, [req.userId, co2_amount, currentDate], function (err) {
+    if (err) {
+      console.error('Error saving CO2 data:', err.message);
+      return res.status(500).send('Error saving data');
+    }
+
+    // Rispondi con l'ID del record inserito e altre informazioni
+    res.status(201).send({
+      id: this.lastID,
+      user_id: req.userId,
+      co2_amount: co2_amount,
+      date: currentDate,
+    });
   });
 });
 
-// Fetch CO2 tips
-router.get('/tips', (req, res) => {
-  const tips = [
-    'Use public transportation',
-    'Reduce electricity consumption',
-    'Switch to renewable energy',
-  ];
-  res.send(tips);
+// Fetch all users
+router.get('/users', authenticate, (req, res) => {
+  const query = `
+    SELECT id, username, email, age, gender, residence, education, is_studying, new_education
+    FROM users
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching users:', err.message);
+      return res.status(500).send('Error fetching users');
+    }
+
+    res.status(200).json(rows); // Rispondi con i dati degli utenti
+  });
 });
+
+// Fetch CO2 data for the authenticated user
+router.get('/co2', authenticate, (req, res) => {
+  const query = `
+    SELECT id, co2_amount, date
+    FROM co2_data
+    WHERE user_id = ?
+    ORDER BY date DESC
+  `;
+
+  db.all(query, [req.userId], (err, rows) => {
+    if (err) {
+      console.error('Error fetching CO2 data:', err.message);
+      return res.status(500).send('Error fetching data');
+    }
+
+    res.status(200).json(rows); // Rispondi con i dati in formato JSON
+  });
+});
+
+
+// Fetch CO2 data for a specific user by user_id
+router.get('/co2/:userId', authenticate, (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT id, co2_amount, date
+    FROM co2_data
+    WHERE user_id = ?
+    ORDER BY date DESC
+  `;
+
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error('Error fetching CO2 data for user:', err.message);
+      return res.status(500).send('Error fetching data');
+    }
+
+    res.status(200).json(rows); // Rispondi con i dati di CO₂ per l'utente
+  });
+});
+
 
 module.exports = router;

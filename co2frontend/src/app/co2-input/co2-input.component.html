@@ -26,13 +26,12 @@
     </select>
 
     <!-- Pulsante di invio -->
-    <button type="submit">Calcola CO₂</button>
+    <button type="submit">Calcola e Salva CO₂</button>
   </form>
 
   <!-- Mostra il risultato -->
   <div class="result" *ngIf="co2Result !== null">
     <h3>Risultato:</h3>
     <p>Il tuo consumo di dati corrisponde a <strong class="co2-amount">{{ co2Result }} kg</strong> di CO₂.</p>
-    <p class="current-date">Calcolato il: <strong>{{ currentDate }}</strong></p>
   </div>
 </div>

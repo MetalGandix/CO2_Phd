@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root', // Configurazione per la disponibilità globale
@@ -15,6 +15,12 @@ export class AuthService {
   }
 
   login(loginData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, loginData);
+    return this.http.post(`${this.apiUrl}/login`, loginData).pipe(
+      tap((response: any) => {
+        // Non è più necessario salvare il token qui, poiché viene fatto nel componente
+        console.log('Login response:', response);
+      })
+    );
   }
+  
 }

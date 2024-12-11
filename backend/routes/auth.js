@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../database');
 const router = express.Router();
 
-const SECRET_KEY = 'your_secret_key';
+const SECRET_KEY = 'co2secretkeyunimore';
 
 //REGISTRAZIONE
 router.post('/register', (req, res) => {
@@ -57,7 +57,7 @@ router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).send('Email and password are required.');
+    return res.status(400).send({ error: 'Email and password are required.' });
   }
 
   const query = 'SELECT * FROM users WHERE email = ?';
@@ -65,11 +65,17 @@ router.post('/login', (req, res) => {
   db.get(query, [email], (err, user) => {
     if (err) {
       console.error('Errore durante il login:', err.message);
-      return res.status(500).send('Error during login');
+      return res.status(500).send({ error: 'Error during login' });
     }
 
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.status(401).send('Invalid credentials');
+    if (!user) {
+      return res.status(401).send({ error: 'Invalid email or password' });
+    }
+
+    // Confronta la password
+    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send({ error: 'Invalid email or password' });
     }
 
     // Genera un token JWT
@@ -77,8 +83,14 @@ router.post('/login', (req, res) => {
       expiresIn: '1h', // Token valido per 1 ora
     });
 
-    res.send({ token, message: 'Login successful!' });
+    // Rispondi con il token e l'ID utente
+    res.send({
+      token,
+      userId: user.id,
+      message: 'Login successful!',
+    });
   });
 });
+
 
 module.exports = router;

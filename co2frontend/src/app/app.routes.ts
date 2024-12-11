@@ -1,14 +1,13 @@
 import { Routes } from '@angular/router';
-import { AuthComponent } from './auth/auth.component';
-import { Co2InputComponent } from './co2-input/co2-input.component';
 import { TipsComponent } from './tips/tips.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { AuthGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: AuthComponent },
-  { path: 'co2-input', component: Co2InputComponent },
+  { path: '', component: LoginComponent },
   { path: 'tips', component: TipsComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) },
+  { path: 'co2-input', loadComponent: () => import('./co2-input/co2-input.component').then(m => m.Co2InputComponent), canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent },
 ];
