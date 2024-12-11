@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
+import { ErrorService } from '../error.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,12 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private errorService: ErrorService) {}
+
+  ngOnInit(): void {
+    this.errorMessage = this.errorService.getErrorMessage();
+    this.errorService.clearErrorMessage(); // Cancella il messaggio di errore dopo averlo mostrato
+  }
 
   onLogin() {
     if (!this.email || !this.password) {
