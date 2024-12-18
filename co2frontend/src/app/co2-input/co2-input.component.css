@@ -9,6 +9,18 @@
   font-family: 'Arial', sans-serif;
 }
 
+.success-message {
+  color: green;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
 h2 {
   text-align: center;
   margin-bottom: 20px;

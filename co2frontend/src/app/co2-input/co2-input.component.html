@@ -14,9 +14,6 @@
       required
     />
 
-    <!-- Messaggio di errore -->
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
-
     <!-- Menu a tendina per l'unità -->
     <label for="data-unit">Unità:</label>
     <select
@@ -28,6 +25,10 @@
       <option value="Mb">Mb</option>
       <option value="Gb">Gb</option>
     </select>
+
+    <!-- Messaggi di errore o successo -->
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
 
     <!-- Pulsante di invio -->
     <button type="submit">Calcola e Salva CO₂</button>

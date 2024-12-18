@@ -26,31 +26,51 @@ const authenticate = (req, res, next) => {
   });
 };
 
-
 // Save CO2 data
 router.post('/co2', authenticate, (req, res) => {
   const { co2_amount } = req.body;
 
-  // Ottieni la data corrente
-  const currentDate = new Date().toISOString();
+  // Ottieni la data corrente senza il timestamp (solo yyyy-mm-dd)
+  const currentDate = new Date().toISOString().split('T')[0];
 
-  // Inserimento nella tabella co2_data con data
-  const query = `
-    INSERT INTO co2_data (user_id, co2_amount, date)
-    VALUES (?, ?, ?)
+  // Controlla se esiste già un valore di CO₂ per l'utente nello stesso giorno
+  const checkQuery = `
+    SELECT id 
+    FROM co2_data
+    WHERE user_id = ? AND date(date) = ?
   `;
-  db.run(query, [req.userId, co2_amount, currentDate], function (err) {
+
+  db.get(checkQuery, [req.userId, currentDate], (err, row) => {
     if (err) {
-      console.error('Error saving CO2 data:', err.message);
-      return res.status(500).send('Error saving data');
+      console.error('Error checking existing CO2 data:', err.message);
+      return res.status(500).send('Error checking data');
     }
 
-    // Rispondi con l'ID del record inserito e altre informazioni
-    res.status(201).send({
-      id: this.lastID,
-      user_id: req.userId,
-      co2_amount: co2_amount,
-      date: currentDate,
+    if (row) {
+      // Se esiste un valore, restituisci un messaggio senza inserire un nuovo record
+      return res.status(409).json({
+        error: 'CO2 data for this user already exists for today.',
+      });
+    }
+
+    // Inserimento nella tabella co2_data con data
+    const insertQuery = `
+      INSERT INTO co2_data (user_id, co2_amount, date)
+      VALUES (?, ?, ?)
+    `;
+    db.run(insertQuery, [req.userId, co2_amount, currentDate], function (err) {
+      if (err) {
+        console.error('Error saving CO2 data:', err.message);
+        return res.status(500).send('Error saving data');
+      }
+
+      // Rispondi con l'ID del record inserito e altre informazioni
+      res.status(201).send({
+        id: this.lastID,
+        user_id: req.userId,
+        co2_amount: co2_amount,
+        date: currentDate,
+      });
     });
   });
 });

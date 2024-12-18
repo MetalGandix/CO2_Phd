@@ -15,6 +15,7 @@ export class Co2InputComponent {
   co2Result: number | null = null; // Risultato della conversione in CO2
   currentDate: string = ''; // Data corrente
   userId: string | null = null; // ID dell'utente, inizialmente vuoto
+  successMessage: string = ""; // Messaggio di successo
 
   equivalences = [
     { max: 10, text: "Equivale a un viaggio in auto di 50 km." },
@@ -43,39 +44,42 @@ export class Co2InputComponent {
   constructor(private co2Service: Co2Service) { }
 
   onSubmit() {
-    // Reset messaggio di errore
+    // Reset messaggi
     this.errorMessage = "";
-
+    this.successMessage = "";
+  
     // Validazione dei dati inseriti
     if (this.dataAmount !== null && this.dataAmount > 0 && this.dataAmount <= 2000 && this.dataUnit) {
       // Calcolo aggiornato della CO2
       this.co2Result = this.dataUnit === 'Mb'
         ? (this.dataAmount / 1024) * 0.02 * 475
         : this.dataAmount * 0.02 * 475;
-
+  
       // Aggiunta della data corrente
       const now = new Date();
       this.currentDate = now.toISOString();
-
+  
       // Creazione del payload per salvare i dati
       const co2Data = {
         user_id: sessionStorage.getItem('userId'),
         co2_amount: this.co2Result,
         date: this.currentDate,
       };
-
+  
       // Salvataggio dei dati e gestione della risposta
       this.co2Service.saveCo2Data(co2Data).subscribe({
         next: (response) => {
-          console.log('Dati salvati con successo:', response);
-          alert('Dati salvati con successo!');
+          this.co2Result = response.co2_amount; // Aggiorna il risultato
+          this.successMessage = "CO₂ salvata!"; // Mostra il messaggio di successo
+          this.errorMessage = ''; // Resetta eventuali errori
         },
         error: (err) => {
           console.error('Errore durante il salvataggio dei dati:', err);
-          if (err.error instanceof Object) {
-            alert(`Errore: ${err.error.error || 'Errore sconosciuto'}`);
+          if (err.status === 409) {
+            // Errore specifico: già presente un dato CO2 per oggi
+            this.errorMessage = 'Hai già inserito un valore di CO₂ per oggi.';
           } else {
-            alert('Errore durante il salvataggio dei dati. Riprova.');
+            this.errorMessage = 'Errore durante il salvataggio dei dati. Riprova.';
           }
         },
       });
