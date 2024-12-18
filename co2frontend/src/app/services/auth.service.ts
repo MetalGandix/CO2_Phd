@@ -6,7 +6,7 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root', // Configurazione per la disponibilità globale
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth';
+  private apiUrl = 'https://co2-unimore.glitch.me/auth';
 
   constructor(private http: HttpClient) {}
 

@@ -6,7 +6,7 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class Co2Service {
-  private apiUrl = 'http://localhost:3000/data'
+  private apiUrl = 'https://co2-unimore.glitch.me/data'
 
   constructor(private http: HttpClient) {}
 
