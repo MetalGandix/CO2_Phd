@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Co2Service } from '../co2.service';
+import { Co2Service } from '../services/co2.service';
 
 @Component({
   selector: 'app-co2-input',

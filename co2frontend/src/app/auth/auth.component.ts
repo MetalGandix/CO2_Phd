@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Co2Service } from '../co2.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Co2Service } from '../services/co2.service';
 
 @Component({
   selector: 'app-auth',
