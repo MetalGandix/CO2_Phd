@@ -61,6 +61,30 @@ export class AuthComponent {
     });
   }
 
+  deleteCo2Data(co2Id: string) {
+    this.co2Service.deleteCo2Data(co2Id).subscribe({
+      next: () => {
+        console.log(`CO2 data with ID ${co2Id} deleted successfully.`);
+        this.fetchAllCo2(); // Aggiorna la lista dei dati CO₂
+      },
+      error: (error) => {
+        console.error(`Error deleting CO2 data with ID ${co2Id}:`, error);
+      },
+    });
+  }
+  
+  deleteUser(userId: string) {
+    this.co2Service.deleteUser(userId).subscribe({
+      next: () => {
+        console.log(`User with ID ${userId} deleted successfully.`);
+        this.fetchAllUsers(); // Aggiorna la lista degli utenti
+      },
+      error: (error) => {
+        console.error(`Error deleting user with ID ${userId}:`, error);
+      },
+    });
+  }
+
   exportToExcel() {
     // Combina utenti e dati CO₂ in un unico oggetto
     const usersSheet = XLSX.utils.json_to_sheet(this.users);

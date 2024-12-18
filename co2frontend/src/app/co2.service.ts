@@ -26,7 +26,6 @@ export class Co2Service {
     });
   }
 
-  
   getAllCo2(): Observable<any> {
     return this.http.get(`${this.apiUrl}/getAllco2`, {
       headers: {
@@ -35,7 +34,6 @@ export class Co2Service {
     });
   }
 
-
   getCo2ByUserId(userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/co2/${userId}`, {
       headers: {
@@ -43,4 +41,21 @@ export class Co2Service {
       },
     });
   }
+
+  deleteCo2Data(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/co2/${id}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    });
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    });
+  }
+
 }

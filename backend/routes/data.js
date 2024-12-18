@@ -133,5 +133,52 @@ router.get('/co2/:userId', authenticate, (req, res) => {
   });
 });
 
+// Delete CO2 data by ID
+router.delete('/co2/:id', authenticate, (req, res) => {
+  const { id } = req.params;
+
+  const query = `
+    DELETE FROM co2_data
+    WHERE id = ?
+  `;
+
+  db.run(query, [id], function (err) {
+    if (err) {
+      console.error('Error deleting CO2 data:', err.message);
+      return res.status(500).send('Error deleting CO2 data');
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).send('CO2 data not found');
+    }
+
+    res.status(200).send({ message: 'CO2 data deleted successfully' });
+  });
+});
+
+// Delete user by ID
+router.delete('/users/:id', authenticate, (req, res) => {
+  const { id } = req.params;
+
+  const query = `
+    DELETE FROM users
+    WHERE id = ?
+  `;
+
+  db.run(query, [id], function (err) {
+    if (err) {
+      console.error('Error deleting user:', err.message);
+      return res.status(500).send('Error deleting user');
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    res.status(200).send({ message: 'User deleted successfully' });
+  });
+});
+
+
 
 module.exports = router;
