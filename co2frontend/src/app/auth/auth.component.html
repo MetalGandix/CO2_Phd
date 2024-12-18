@@ -1,0 +1,126 @@
+<div class="container">
+  <button (click)="exportToExcel()">Scarica Report</button>
+
+  <h1>Gestione Dati CO₂</h1>
+
+  <!-- Navigazione tra le sezioni -->
+  <div class="button-group">
+    <button [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Utenti</button>
+    <button [class.active]="activeTab === 'co2'" (click)="activeTab = 'co2'">Dati CO₂</button>
+    <button [class.active]="activeTab === 'filter'" (click)="activeTab = 'filter'">Filtro CO₂ per Utente</button>
+  </div>
+
+  <!-- Sezione Utenti -->
+  <section *ngIf="activeTab === 'users'">
+    <h2>Utenti</h2>
+    <button (click)="fetchAllUsers()">Mostra Tutti gli Utenti</button>
+    <div class="table-container">
+      <table *ngIf="paginatedUsers.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Età</th>
+            <th>Genere</th>
+            <th>Residenza</th>
+            <th>Titolo di Studio</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of paginatedUsers">
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.age }}</td>
+            <td>{{ user.gender }}</td>
+            <td>{{ user.residence }}</td>
+            <td>{{ user.education }}</td>
+            <td>
+              <button (click)="deleteUser(user.id)">Elimina</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button (click)="prevPage('users')" [disabled]="currentPageUsers === 1">Precedente</button>
+      <button (click)="nextPage('users')" [disabled]="currentPageUsers === totalPagesUsers">Successivo</button>
+    </div>
+    <p *ngIf="users.length === 0">Nessun utente trovato.</p>
+  </section>
+
+  <!-- Sezione CO₂ -->
+  <section *ngIf="activeTab === 'co2'">
+    <h2>Dati CO₂</h2>
+    <button (click)="fetchAllCo2()">Mostra Tutti i Dati CO₂</button>
+    <div class="table-container">
+      <table *ngIf="paginatedCo2Data.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Utente ID</th>
+            <th>CO₂ Amount</th>
+            <th>Data</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of paginatedCo2Data">
+            <td>{{ data.id }}</td>
+            <td>{{ data.user_id }}</td>
+            <td>{{ data.co2_amount }}</td>
+            <td>{{ data.date }}</td>
+            <td>
+              <button (click)="deleteCo2Data(data.id)">Elimina</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button (click)="prevPage('co2')" [disabled]="currentPageCo2 === 1">Precedente</button>
+      <button (click)="nextPage('co2')" [disabled]="currentPageCo2 === totalPagesCo2">Successivo</button>
+    </div>
+    <p *ngIf="co2Data.length === 0">Nessun dato CO₂ trovato.</p>
+  </section>
+
+  <!-- Sezione Filtro CO₂ per Utente -->
+  <section *ngIf="activeTab === 'filter'">
+    <h2>Filtra CO₂ per ID Utente</h2>
+    <div>
+      <label for="userId">ID Utente:</label>
+      <input
+        type="text"
+        id="userId"
+        [(ngModel)]="filterUserId"
+        placeholder="Inserisci ID Utente"
+      />
+      <button (click)="fetchCo2ForUser()">Cerca</button>
+    </div>
+    <div class="table-container">
+      <table *ngIf="filteredCo2Data.length > 0" class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>CO₂ Amount</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of filteredCo2Data">
+            <td>{{ data.id }}</td>
+            <td>{{ data.co2_amount }}</td>
+            <td>{{ data.date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p *ngIf="filteredCo2Data.length === 0 && filterUserId">
+      Nessun dato CO₂ trovato per l'ID Utente {{ filterUserId }}.
+    </p>
+  </section>
+   <!-- Spinner -->
+   <div *ngIf="isLoading" class="spinner-container">
+    <div class="spinner"></div>
+  </div>
+</div>

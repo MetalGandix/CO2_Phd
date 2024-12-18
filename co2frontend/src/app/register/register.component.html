@@ -1,0 +1,72 @@
+<div class="background-image"></div>
+<div class="form-container">
+  <h2>Registrati</h2>
+  <form (ngSubmit)="onRegister()">
+    <label for="email">Email</label>
+    <input type="email" id="email" [(ngModel)]="email" name="email" required />
+    <div *ngIf="!isEmailValid(email) && email" class="error">
+      Inserisci un'email valida.
+    </div>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" [(ngModel)]="password" name="password" required />
+    <div *ngIf="!isPasswordValid(password) && password" class="error">
+      La password deve avere almeno 8 caratteri, una lettera maiuscola e un carattere alfanumerico.
+    </div>
+
+    <label for="confirmPassword">Conferma Password</label>
+    <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+    <div *ngIf="password !== confirmPassword && confirmPassword" class="error">
+      Le password non corrispondono.
+    </div>
+
+    <label for="age">Età</label>
+    <input type="number" id="age" [(ngModel)]="age" name="age" required />
+
+    <div class="form-group">
+      <label for="gender">Genere</label>
+      <div class="custom-select">
+        <select id="gender" [(ngModel)]="gender" name="gender" required>
+          <option value="" disabled selected>Seleziona</option>
+          <option value="male">Maschio</option>
+          <option value="female">Femmina</option>
+          <option value="other">Altro</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="residence">Residenza</label>
+    <input type="text" id="residence" [(ngModel)]="residence" name="residence" required />
+
+    <label for="education">Titolo di studio</label>
+    <input type="text" id="education" [(ngModel)]="education" name="education" required />
+
+    <div class="form-group">
+      <label>Stai acquisendo un altro titolo di studio?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" id="studyingYes" [(ngModel)]="isStudying" name="isStudying" [value]="true" />
+          <label for="studyingYes">Sì</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="studyingNo" [(ngModel)]="isStudying" name="isStudying" [value]="false" />
+          <label for="studyingNo">No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="isStudying === true">
+      <label for="newEducation">Quale?</label>
+      <input type="text" id="newEducation" [(ngModel)]="newEducation" name="newEducation" class="input-field" />
+    </div>
+
+    <button type="submit">Registrati</button>
+  </form>
+  <p>Hai già un account? <a routerLink="/login">Login</a></p>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <!-- Spinner -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <div class="spinner"></div>
+  </div>
+</div>
