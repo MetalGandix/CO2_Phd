@@ -16,6 +16,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  isLoading: boolean = false; // Controlla lo spinner
 
   constructor(private authService: AuthService, private router: Router, private errorService: ErrorService) {}
 
@@ -29,6 +30,8 @@ export class LoginComponent {
       this.errorMessage = 'Per favore, compila tutti i campi.';
       return;
     }
+
+    this.isLoading = true; // Mostra lo spinner
   
     const loginData = { email: this.email, password: this.password };
   
@@ -43,6 +46,7 @@ export class LoginComponent {
         sessionStorage.setItem('email', this.email);
   
         this.errorMessage = '';
+        this.isLoading = false; // Nascondi lo spinner
         this.router.navigate(['/co2-input']).then(() => {
           window.location.reload(); // Ricarica la pagina per aggiornare la toolbar
         });
@@ -50,6 +54,7 @@ export class LoginComponent {
       error: (error) => {
         console.error('Errore durante il login:', error);
         this.errorMessage = 'Credenziali non valide. Riprova.';
+        this.isLoading = false;
       },
     });
   }

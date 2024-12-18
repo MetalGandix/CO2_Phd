@@ -22,6 +22,7 @@ export class RegisterComponent {
   isStudying: boolean | null = null;
   newEducation: string = '';
   successMessage: string = ''; // Messaggio di successo
+  isLoading: boolean = false; // Controlla lo spinner
   errorMessage: string = ''; // Messaggio di errore
 
   constructor(private authService: AuthService, private router: Router) {} // Inietta il servizio
@@ -61,15 +62,18 @@ export class RegisterComponent {
       newEducation: this.isStudying ? this.newEducation : null,
     };
 
+    this.isLoading = true;
     this.authService.register(userData).subscribe({
       next: (response) => {
         console.log('Registrazione completata:', response);
         this.successMessage = 'Registrazione completata con successo!';
         this.errorMessage = '';
+        this.isLoading = false; // Nascondi lo spinner
         this.router.navigate(['/login']);
       },
       error: (error) => {
         console.error('Errore durante la registrazione:', error);
+        this.isLoading = false; // Nascondi lo spinner
         if (error.status === 409) {
           this.errorMessage = 'L\'email è già registrata.';
         } else {

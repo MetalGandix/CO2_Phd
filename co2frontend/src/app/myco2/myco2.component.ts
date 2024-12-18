@@ -12,6 +12,7 @@ import { Co2Service } from '../services/co2.service';
 export class Myco2Component implements OnInit {
   co2Data: any[] = []; // Contenitore per i dati CO₂ dell'utente
   userId: string | null = null; // ID dell'utente
+  isLoading: boolean = false; // Controlla lo spinner
 
   constructor(private co2Service: Co2Service) {}
 
@@ -23,13 +24,16 @@ export class Myco2Component implements OnInit {
       this.fetchUserCo2Data(this.userId);
     } else {
       console.error('ID utente non trovato nel sessionStorage');
+      this.isLoading = false; // Nascondi lo spinner
     }
   }
 
   fetchUserCo2Data(userId: string): void {
+    this.isLoading = true; // Mostra lo spinner
     this.co2Service.getCo2ByUserId(userId).subscribe({
       next: (data) => {
         this.co2Data = data;
+        this.isLoading = false; // Nascondi lo spinner
         console.log('Dati CO₂ per l\'utente:', this.co2Data);
       },
       error: (error) => {

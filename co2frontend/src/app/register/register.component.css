@@ -131,14 +131,33 @@ p {
 }
 
 
-/* .background-image { */
-  /* background: url('https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?fit=crop&w=1500&q=80') no-repeat center center; */
-  /* background-size: cover; */
-  /* position: absolute; */
-  /* top: 0; */
-  /* left: 0; */
-  /* width: 100%; */
-  /* height: 100%; */
-  /* z-index: -1; Sfondo posizionato dietro la pagina */
-  /* opacity: 0.8; Rende l'immagine più morbida */
-/* } */
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Sfondo semitrasparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3); /* Colore sfondo spinner */
+  border-top: 4px solid #fff; /* Colore animazione */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

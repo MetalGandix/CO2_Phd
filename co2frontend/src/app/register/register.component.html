@@ -34,7 +34,7 @@
         </select>
       </div>
     </div>
-    
+
     <label for="residence">Residenza</label>
     <input type="text" id="residence" [(ngModel)]="residence" name="residence" required />
 
@@ -65,4 +65,8 @@
   <p>Hai già un account? <a routerLink="/login">Login</a></p>
   <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <!-- Spinner -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <div class="spinner"></div>
+  </div>
 </div>

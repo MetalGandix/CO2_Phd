@@ -17,6 +17,7 @@ export class AuthComponent {
   filteredCo2Data: any[] = []; // Dati CO₂ filtrati per utente
   filterUserId: string = ''; // ID utente per filtro
   activeTab: string = 'users'; // Tab attivo
+  isLoading: boolean = false; // Controlla lo spinner
 
   // Paginazione utenti
   currentPageUsers: number = 1;
@@ -33,30 +34,38 @@ export class AuthComponent {
   constructor(private co2Service: Co2Service) {}
 
   fetchAllUsers() {
+    this.isLoading = true;
     this.co2Service.getAllUsers().subscribe({
       next: (users) => {
         this.users = users;
         this.updatePaginatedUsers();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching users:', error);
+        this.isLoading = false;
       }
     });
   }
 
   fetchAllCo2() {
+    this.isLoading = true;
     this.co2Service.getAllCo2().subscribe({
       next: (co2) => {
         this.co2Data = co2;
         this.updatePaginatedCo2();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching CO2 data:', error);
+        this.isLoading = false;
       }
     });
   }
 
   fetchCo2ForUser() {
+    this.isLoading = true;
+
     if (!this.filterUserId.trim()) {
       console.warn('User ID is required to filter CO2 data');
       return;
@@ -65,33 +74,43 @@ export class AuthComponent {
     this.co2Service.getCo2ByUserId(this.filterUserId).subscribe({
       next: (co2Data) => {
         this.filteredCo2Data = co2Data;
+        this.isLoading = false;
       },
       error: (error) => {
         console.error(`Error fetching CO2 data for user ${this.filterUserId}:`, error);
+        this.isLoading = false;
       }
     });
   }
 
   deleteCo2Data(co2Id: string) {
+    this.isLoading = true;
+
     this.co2Service.deleteCo2Data(co2Id).subscribe({
       next: () => {
         console.log(`CO2 data with ID ${co2Id} deleted successfully.`);
         this.fetchAllCo2();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error(`Error deleting CO2 data with ID ${co2Id}:`, error);
+        this.isLoading = false;
       },
     });
   }
 
   deleteUser(userId: string) {
+    this.isLoading = true;
+
     this.co2Service.deleteUser(userId).subscribe({
       next: () => {
         console.log(`User with ID ${userId} deleted successfully.`);
         this.fetchAllUsers();
+        this.isLoading = false;
       },
       error: (error) => {
         console.error(`Error deleting user with ID ${userId}:`, error);
+        this.isLoading = false;
       },
     });
   }

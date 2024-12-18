@@ -1,25 +1,29 @@
 <div class="container">
-    <h1>Il Mio Consumo di CO₂</h1>
-  
-    <div *ngIf="co2Data.length > 0; else noData">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>CO₂</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of co2Data">
-            <td>{{ data.co2_amount }} kg</td>
-            <td>{{ data.date | date:'short' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <ng-template #noData>
-      <p>Nessun dato CO₂ trovato per il tuo account.</p>
-    </ng-template>
+  <h1>Il Mio Consumo di CO₂</h1>
+
+  <div *ngIf="co2Data.length > 0; else noData">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>CO₂</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of co2Data">
+          <td>{{ data.co2_amount }} kg</td>
+          <td>{{ data.date | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  
+
+  <ng-template #noData>
+    <p>Nessun dato CO₂ trovato per il tuo account.</p>
+  </ng-template>
+
+  <!-- Spinner -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <div class="spinner"></div>
+  </div>
+</div>
