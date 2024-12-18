@@ -2,15 +2,20 @@
   <h2>Inserisci il consumo di dati</h2>
   <form (ngSubmit)="onSubmit()">
     <!-- Input per il numero -->
-    <label for="data-amount">Consumo di dati:</label>
+    <label for="data-amount">Consumo di dati (max 2000 GB):</label>
     <input
       type="number"
       id="data-amount"
       [(ngModel)]="dataAmount"
       name="dataAmount"
       placeholder="Inserisci il consumo"
+      min="0"
+      max="2000"
       required
     />
+
+    <!-- Messaggio di errore -->
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
     <!-- Menu a tendina per l'unità -->
     <label for="data-unit">Unità:</label>
@@ -20,7 +25,6 @@
       name="dataUnit"
       required
     >
-      <option value="Kb">Kb</option>
       <option value="Mb">Mb</option>
       <option value="Gb">Gb</option>
     </select>
@@ -33,5 +37,6 @@
   <div class="result" *ngIf="co2Result !== null">
     <h3>Risultato:</h3>
     <p>Il tuo consumo di dati corrisponde a <strong class="co2-amount">{{ co2Result }} kg</strong> di CO₂.</p>
+    <p><em>{{ getEquivalence() }}</em></p>
   </div>
 </div>
