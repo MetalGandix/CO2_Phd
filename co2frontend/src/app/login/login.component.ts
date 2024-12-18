@@ -40,6 +40,7 @@ export class LoginComponent {
         sessionStorage.setItem('authToken', response.token);
         sessionStorage.setItem('userId', response.userId);
         sessionStorage.setItem('role', response.role); // Salva il ruolo
+        sessionStorage.setItem('email', this.email);
   
         this.errorMessage = '';
         this.router.navigate(['/co2-input']).then(() => {

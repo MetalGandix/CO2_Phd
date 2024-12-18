@@ -1,5 +1,8 @@
 <div class="toolbar">
-  <div class="logo">CO₂ Tracker</div>
+  <div class="logo-container">
+    <div class="logo">CO₂ Tracker</div>
+    <div *ngIf="isAuthenticated" class="user-email">{{ userEmail }}</div>
+  </div>
   <div class="hamburger" (click)="toggleMenu(nav, hamburger)" #hamburger>
     <span></span>
     <span></span>
