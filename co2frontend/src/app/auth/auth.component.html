@@ -5,9 +5,9 @@
 
   <!-- Navigazione tra le sezioni -->
   <div class="button-group">
-    <button (click)="activeTab = 'users'">Utenti</button>
-    <button (click)="activeTab = 'co2'">Dati CO₂</button>
-    <button (click)="activeTab = 'filter'">Filtro CO₂ per Utente</button>
+    <button [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Utenti</button>
+    <button [class.active]="activeTab === 'co2'" (click)="activeTab = 'co2'">Dati CO₂</button>
+    <button [class.active]="activeTab === 'filter'" (click)="activeTab = 'filter'">Filtro CO₂ per Utente</button>
   </div>
 
   <!-- Sezione Utenti -->
@@ -15,7 +15,7 @@
     <h2>Utenti</h2>
     <button (click)="fetchAllUsers()">Mostra Tutti gli Utenti</button>
     <div class="table-container">
-      <table *ngIf="users.length > 0" class="table">
+      <table *ngIf="paginatedUsers.length > 0" class="table">
         <thead>
           <tr>
             <th>ID</th>
@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of users">
+          <tr *ngFor="let user of paginatedUsers">
             <td>{{ user.id }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.age }}</td>
@@ -42,6 +42,10 @@
         </tbody>
       </table>
     </div>
+    <div class="pagination">
+      <button (click)="prevPage('users')" [disabled]="currentPageUsers === 1">Precedente</button>
+      <button (click)="nextPage('users')" [disabled]="currentPageUsers === totalPagesUsers">Successivo</button>
+    </div>
     <p *ngIf="users.length === 0">Nessun utente trovato.</p>
   </section>
 
@@ -50,7 +54,7 @@
     <h2>Dati CO₂</h2>
     <button (click)="fetchAllCo2()">Mostra Tutti i Dati CO₂</button>
     <div class="table-container">
-      <table *ngIf="co2Data.length > 0" class="table">
+      <table *ngIf="paginatedCo2Data.length > 0" class="table">
         <thead>
           <tr>
             <th>ID</th>
@@ -61,7 +65,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of co2Data">
+          <tr *ngFor="let data of paginatedCo2Data">
             <td>{{ data.id }}</td>
             <td>{{ data.user_id }}</td>
             <td>{{ data.co2_amount }}</td>
@@ -72,6 +76,10 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="pagination">
+      <button (click)="prevPage('co2')" [disabled]="currentPageCo2 === 1">Precedente</button>
+      <button (click)="nextPage('co2')" [disabled]="currentPageCo2 === totalPagesCo2">Successivo</button>
     </div>
     <p *ngIf="co2Data.length === 0">Nessun dato CO₂ trovato.</p>
   </section>
