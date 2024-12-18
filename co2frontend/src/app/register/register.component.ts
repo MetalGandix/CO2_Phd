@@ -66,7 +66,7 @@ export class RegisterComponent {
         console.log('Registrazione completata:', response);
         this.successMessage = 'Registrazione completata con successo!';
         this.errorMessage = '';
-        this.router.navigate(['/co2-input']);
+        this.router.navigate(['/login']);
       },
       error: (error) => {
         console.error('Errore durante la registrazione:', error);

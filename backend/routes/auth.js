@@ -2,12 +2,22 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
 
 const SECRET_KEY = 'co2secretkeyunimore';
 
-//REGISTRAZIONE
-router.post('/register', (req, res) => {
+// Configura il middleware di limitazione delle richieste
+const registerLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minuti
+  max: 50, // Limita a 50 richieste per finestra temporale
+  message: {
+    error: 'Troppe registrazioni effettuate. Riprova tra 10 minuti.',
+  },
+});
+
+// REGISTRAZIONE
+router.post('/register', registerLimiter, (req, res) => {
   const {
     email,
     password,
@@ -68,7 +78,7 @@ router.post('/register', (req, res) => {
   });
 });
 
-//LOGIN
+// LOGIN
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -106,9 +116,7 @@ router.post('/login', (req, res) => {
       role: user.role, // Aggiungi il ruolo
       message: 'Login successful!',
     });
-    
   });
 });
-
 
 module.exports = router;
