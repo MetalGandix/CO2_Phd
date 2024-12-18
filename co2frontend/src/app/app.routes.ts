@@ -37,4 +37,8 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'login' },
 ];
 
-export class AppRoutingModule {}
+@NgModule({
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
