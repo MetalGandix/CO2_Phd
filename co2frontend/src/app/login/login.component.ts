@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { ErrorService } from '../services/error.service';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false; // Controlla lo spinner
 
-  constructor(private authService: AuthService, private router: Router, private errorService: ErrorService) {}
+  constructor(private authService: AuthService, private router: Router, private errorService: ErrorService, private toolbar: ToolbarComponent) {}
 
   ngOnInit(): void {
     this.errorMessage = this.errorService.getErrorMessage();
@@ -48,7 +49,7 @@ export class LoginComponent {
         this.errorMessage = '';
         this.isLoading = false; // Nascondi lo spinner
         this.router.navigate(['/co2-input']).then(() => {
-          window.location.reload(); // Ricarica la pagina per aggiornare la toolbar
+          this.toolbar.checkAuthentication();
         });
       },
       error: (error) => {

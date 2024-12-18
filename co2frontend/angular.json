@@ -24,14 +24,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/_redirects"
             ],
             "styles": [
               "src/styles.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "outputMode": "server",
+            "outputMode": "static",
             "ssr": {
               "entry": "src/server.ts"
             }
@@ -96,7 +97,12 @@
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/co2frontend/browser",
+            "netlifyToken": "nfp_8cswD83Hx4Wgd4DJxFFxKsWFgPHStVdgefac",
+            "siteId": "2464f017-dfba-4120-b634-1e4b8501cd09"
+          }
         }
       }
     }
