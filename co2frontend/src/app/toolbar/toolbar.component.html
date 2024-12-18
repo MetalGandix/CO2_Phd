@@ -16,6 +16,7 @@
       <a routerLink="/co2-input" routerLinkActive="active">Inserimento CO₂</a>
       <a routerLink="/myco2" routerLinkActive="active">My CO₂</a>
       <a routerLink="/tips" routerLinkActive="active">Consigli</a>
+      <a *ngIf="isAdmin" routerLink="/admin" routerLinkActive="active">Admin</a>
       <a (click)="logout()" style="cursor: pointer; text-decoration: none;">Logout</a>
     </ng-template>
   </nav>

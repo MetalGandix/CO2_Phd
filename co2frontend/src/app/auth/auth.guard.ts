@@ -10,11 +10,11 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const token = sessionStorage.getItem('authToken');
-    const userId = sessionStorage.getItem('userId'); // Recupera l'ID utente dal sessionStorage
-
+    const role = sessionStorage.getItem('role'); // Recupera il ruolo dal sessionStorage
+  
     if (token) {
       // Controlla se il percorso richiede privilegi di admin
-      if (route.routeConfig?.path === 'admin' && userId !== '1') {
+      if (route.routeConfig?.path === 'admin' && role !== 'admin') {
         this.errorService.setErrorMessage('Accesso riservato solo agli amministratori.');
         this.router.navigate(['/login']);
         return false;
@@ -26,4 +26,5 @@ export class AuthGuard implements CanActivate {
       return false; // Blocca l'accesso
     }
   }
+  
 }

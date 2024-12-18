@@ -87,8 +87,10 @@ router.post('/login', (req, res) => {
     res.send({
       token,
       userId: user.id,
+      role: user.role, // Aggiungi il ruolo
       message: 'Login successful!',
     });
+    
   });
 });
 

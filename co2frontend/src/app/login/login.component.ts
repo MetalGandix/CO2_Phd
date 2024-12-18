@@ -29,17 +29,18 @@ export class LoginComponent {
       this.errorMessage = 'Per favore, compila tutti i campi.';
       return;
     }
-
+  
     const loginData = { email: this.email, password: this.password };
-
+  
     this.authService.login(loginData).subscribe({
       next: (response: any) => {
         console.log('Login successful:', response);
-
-        // Salva il token e l'ID utente nel sessionStorage
+  
+        // Salva il token, l'ID utente e il ruolo nel sessionStorage
         sessionStorage.setItem('authToken', response.token);
         sessionStorage.setItem('userId', response.userId);
-
+        sessionStorage.setItem('role', response.role); // Salva il ruolo
+  
         this.errorMessage = '';
         this.router.navigate(['/co2-input']).then(() => {
           window.location.reload(); // Ricarica la pagina per aggiornare la toolbar

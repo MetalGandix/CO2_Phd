@@ -6,22 +6,32 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthComponent } from './auth/auth.component';
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'tips', component: TipsComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     loadComponent: () => import('./login/login.component').then((m) => m.LoginComponent),
   },
+  { path: 'register', component: RegisterComponent },
+  {
+    path: 'tips',
+    component: TipsComponent,
+    canActivate: [AuthGuard], // Protegge la sezione Tips
+  },
   {
     path: 'co2-input',
     loadComponent: () => import('./co2-input/co2-input.component').then((m) => m.Co2InputComponent),
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard], // Accesso limitato agli utenti autenticati
   },
   {
     path: 'myco2',
     loadComponent: () => import('./myco2/myco2.component').then((m) => m.Myco2Component),
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard], // Accesso limitato agli utenti autenticati
   },
-  { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AuthComponent, canActivate: [AuthGuard] },
+  {
+    path: 'admin',
+    component: AuthComponent,
+    canActivate: [AuthGuard], // Solo utenti autenticati
+    data: { role: 'admin' }, // Indica che solo gli admin possono accedere
+  },
+  { path: '**', redirectTo: 'login' }, // Rotta di fallback
 ];

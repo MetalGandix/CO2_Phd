@@ -35,7 +35,7 @@ nav a:active {
   color: rgb(212, 64, 64); /* Rosso quando cliccato */
 }
 
-/* Se vuoi mantenerlo rosso dopo il clic (tramite Angular) */
+/* Se vuoi mantenere rosso dopo il clic */
 nav a.active {
   color: rgb(191, 81, 81);
   font-weight: bold;

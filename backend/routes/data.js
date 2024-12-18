@@ -9,19 +9,41 @@ const SECRET_KEY = 'co2secretkeyunimore';
 const authenticate = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
-    return res.status(403).json({ error: 'No token provided' }); // Risposta JSON
+    return res.status(403).json({ error: 'No token provided' });
   }
 
   const token = authHeader.split(' ')[1];
   if (!token) {
-    return res.status(403).json({ error: 'No token provided' }); // Risposta JSON
+    return res.status(403).json({ error: 'No token provided' });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: 'Failed to authenticate token' }); // Risposta JSON
+      return res.status(401).json({ error: 'Failed to authenticate token' });
     }
     req.userId = decoded.id;
+    next();
+  });
+};
+
+// Middleware to check admin role
+const isAdmin = (req, res, next) => {
+  const query = `
+    SELECT role 
+    FROM users 
+    WHERE id = ?
+  `;
+
+  db.get(query, [req.userId], (err, user) => {
+    if (err) {
+      console.error('Error checking role:', err.message);
+      return res.status(500).send('Server error');
+    }
+
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied. Admins only.' });
+    }
+
     next();
   });
 };
@@ -47,38 +69,36 @@ router.post('/co2', authenticate, (req, res) => {
     }
 
     if (row) {
-      // Se esiste un valore, restituisci un messaggio senza inserire un nuovo record
       return res.status(409).json({
         error: 'CO2 data for this user already exists for today.',
       });
     }
 
-    // Inserimento nella tabella co2_data con data
     const insertQuery = `
       INSERT INTO co2_data (user_id, co2_amount, date)
       VALUES (?, ?, ?)
     `;
+
     db.run(insertQuery, [req.userId, co2_amount, currentDate], function (err) {
       if (err) {
         console.error('Error saving CO2 data:', err.message);
         return res.status(500).send('Error saving data');
       }
 
-      // Rispondi con l'ID del record inserito e altre informazioni
       res.status(201).send({
         id: this.lastID,
         user_id: req.userId,
-        co2_amount: co2_amount,
+        co2_amount,
         date: currentDate,
       });
     });
   });
 });
 
-// Fetch all users
-router.get('/users', authenticate, (req, res) => {
+// Fetch all users (Admins only)
+router.get('/users', authenticate, isAdmin, (req, res) => {
   const query = `
-    SELECT id, username, email, age, gender, residence, education, is_studying, new_education
+    SELECT id, email, age, gender, residence, education, is_studying, new_education, role
     FROM users
   `;
 
@@ -88,12 +108,12 @@ router.get('/users', authenticate, (req, res) => {
       return res.status(500).send('Error fetching users');
     }
 
-    res.status(200).json(rows); // Rispondi con i dati degli utenti
+    res.status(200).json(rows);
   });
 });
 
-// Fetch all CO2 data
-router.get('/getAllco2', authenticate, (req, res) => {
+// Fetch all CO2 data (Admins only)
+router.get('/getAllco2', authenticate, isAdmin, (req, res) => {
   const query = `
     SELECT id, co2_amount, date, user_id
     FROM co2_data
@@ -106,11 +126,9 @@ router.get('/getAllco2', authenticate, (req, res) => {
       return res.status(500).send('Error fetching data');
     }
 
-    res.status(200).json(rows); // Rispondi con tutti i dati in formato JSON
+    res.status(200).json(rows);
   });
 });
-
-
 
 // Fetch CO2 data for a specific user by user_id
 router.get('/co2/:userId', authenticate, (req, res) => {
@@ -129,12 +147,12 @@ router.get('/co2/:userId', authenticate, (req, res) => {
       return res.status(500).send('Error fetching data');
     }
 
-    res.status(200).json(rows); // Rispondi con i dati di CO₂ per l'utente
+    res.status(200).json(rows);
   });
 });
 
-// Delete CO2 data by ID
-router.delete('/co2/:id', authenticate, (req, res) => {
+// Delete CO2 data by ID (Admins only)
+router.delete('/co2/:id', authenticate, isAdmin, (req, res) => {
   const { id } = req.params;
 
   const query = `
@@ -156,8 +174,8 @@ router.delete('/co2/:id', authenticate, (req, res) => {
   });
 });
 
-// Delete user by ID
-router.delete('/users/:id', authenticate, (req, res) => {
+// Delete user by ID (Admins only)
+router.delete('/users/:id', authenticate, isAdmin, (req, res) => {
   const { id } = req.params;
 
   const query = `
@@ -178,7 +196,5 @@ router.delete('/users/:id', authenticate, (req, res) => {
     res.status(200).send({ message: 'User deleted successfully' });
   });
 });
-
-
 
 module.exports = router;

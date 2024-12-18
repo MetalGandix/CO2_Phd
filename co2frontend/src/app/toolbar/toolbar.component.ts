@@ -12,6 +12,7 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 export class ToolbarComponent {
 
   isAuthenticated: boolean = false; // Stato di autenticazione
+  isAdmin: boolean = false; // Stato amministratore
 
   constructor(private router: Router) {}
 
@@ -23,20 +24,27 @@ export class ToolbarComponent {
     if (typeof window !== 'undefined' && sessionStorage) {
       // Verifica se il token esiste
       const token = sessionStorage.getItem('authToken');
+      const role = sessionStorage.getItem('role'); // Recupera il ruolo dell'utente
+
       this.isAuthenticated = !!token; // Converte il token in un booleano
+      this.isAdmin = role === 'admin'; // Imposta isAdmin solo se il ruolo è 'admin'
     } else {
       // Imposta come non autenticato se non siamo nel contesto del browser
       this.isAuthenticated = false;
+      this.isAdmin = false;
     }
   }
 
   logout() {
     if (typeof window !== 'undefined' && sessionStorage) {
       sessionStorage.removeItem('authToken'); // Rimuove il token dalla sessione
+      sessionStorage.removeItem('role'); // Rimuove il ruolo dalla sessione
     }
     this.isAuthenticated = false;
+    this.isAdmin = false;
     this.router.navigate(['/login']); // Reindirizza al login
   }
+
   toggleMenu(nav: HTMLElement, hamburger: HTMLElement) {
     nav.classList.toggle('active'); // Mostra o nasconde il menu
     hamburger.classList.toggle('active'); // Anima l'icona hamburger
