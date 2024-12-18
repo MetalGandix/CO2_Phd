@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -21,27 +21,32 @@ export class RegisterComponent {
   education: string = '';
   isStudying: boolean | null = null;
   newEducation: string = '';
+  successMessage: string = ''; // Messaggio di successo
+  errorMessage: string = ''; // Messaggio di errore
 
-  constructor(private authService: AuthService) {} // Inietta il servizio
+  constructor(private authService: AuthService, private router: Router) {} // Inietta il servizio
 
   onRegister() {
+    this.successMessage = '';
+    this.errorMessage = '';
+
     if (!this.isEmailValid(this.email)) {
-      alert('Inserisci un\'email valida.');
+      this.errorMessage = 'Inserisci un\'email valida.';
       return;
     }
 
     if (!this.isPasswordValid(this.password)) {
-      alert('La password deve avere almeno 8 caratteri, una lettera maiuscola e un carattere alfanumerico.');
+      this.errorMessage = 'La password deve avere almeno 8 caratteri, una lettera maiuscola e un carattere alfanumerico.';
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      alert('Le password non corrispondono.');
+      this.errorMessage = 'Le password non corrispondono.';
       return;
     }
 
     if (!this.age || !this.gender || !this.residence || !this.education) {
-      alert('Compila tutti i campi richiesti.');
+      this.errorMessage = 'Compila tutti i campi richiesti.';
       return;
     }
 
@@ -59,11 +64,18 @@ export class RegisterComponent {
     this.authService.register(userData).subscribe({
       next: (response) => {
         console.log('Registrazione completata:', response);
-        alert('Registrazione completata con successo!');
+        this.successMessage = 'Registrazione completata con successo!';
+        this.errorMessage = '';
+        this.router.navigate(['/co2-input']);
       },
       error: (error) => {
         console.error('Errore durante la registrazione:', error);
-        alert('Errore durante la registrazione. Riprova.');
+        if (error.status === 409) {
+          this.errorMessage = 'L\'email è già registrata.';
+        } else {
+          this.errorMessage = 'Errore durante la registrazione. Riprova.';
+        }
+        this.successMessage = '';
       },
     });
   }

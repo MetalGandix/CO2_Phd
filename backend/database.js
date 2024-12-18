@@ -51,7 +51,7 @@ db.serialize(() => {
     if (err) {
       console.error('Errore durante l\'inserimento degli admin:', err.message);
     } else {
-      console.log('Admin creati con successo.');
+      console.log('Done!');
     }
   });
 });

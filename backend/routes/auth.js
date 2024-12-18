@@ -20,36 +20,52 @@ router.post('/register', (req, res) => {
   } = req.body;
 
   if (!email || !password) {
-    return res.status(400).send('Email, and password are required.');
+    return res.status(400).json({ error: 'Email e password sono obbligatorie.' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  // Verifica se l'email è già registrata
+  const checkEmailQuery = `SELECT email FROM users WHERE email = ?`;
 
-  const query = `
-    INSERT INTO users (email, password, age, gender, residence, education, is_studying, new_education)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.run(
-    query,
-    [
-      email,
-      hashedPassword,
-      age || null,
-      gender || null,
-      residence || null,
-      education || null,
-      isStudying ? 1 : 0,
-      newEducation || null,
-    ],
-    function (err) {
-      if (err) {
-        console.error('Errore durante l\'inserimento nel database:', err.message);
-        return res.status(500).send('Error creating user');
-      }
-      res.status(201).send({ id: this.lastID });
+  db.get(checkEmailQuery, [email], (err, row) => {
+    if (err) {
+      console.error('Errore durante la verifica dell\'email:', err.message);
+      return res.status(500).json({ error: 'Errore interno del server.' });
     }
-  );
+
+    if (row) {
+      // Email già registrata
+      return res.status(409).json({ error: 'L\'email è già registrata.' });
+    }
+
+    // Se l'email non è registrata, procedi con l'inserimento
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const query = `
+      INSERT INTO users (email, password, age, gender, residence, education, is_studying, new_education)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+      query,
+      [
+        email,
+        hashedPassword,
+        age || null,
+        gender || null,
+        residence || null,
+        education || null,
+        isStudying ? 1 : 0,
+        newEducation || null,
+      ],
+      function (err) {
+        if (err) {
+          console.error('Errore durante l\'inserimento nel database:', err.message);
+          return res.status(500).json({ error: 'Errore durante la creazione dell\'utente.' });
+        }
+        res.status(201).json({ id: this.lastID, message: 'Registrazione completata con successo!' });
+      }
+    );
+  });
 });
 
 //LOGIN

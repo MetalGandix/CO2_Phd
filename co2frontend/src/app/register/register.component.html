@@ -35,7 +35,6 @@
       </div>
     </div>
     
-
     <label for="residence">Residenza</label>
     <input type="text" id="residence" [(ngModel)]="residence" name="residence" required />
 
@@ -64,4 +63,6 @@
     <button type="submit">Registrati</button>
   </form>
   <p>Hai già un account? <a routerLink="/login">Login</a></p>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 </div>
