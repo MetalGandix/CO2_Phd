@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { AuthStateService } from '../services/auth-state.service'; // Importa il servizio di stato condiviso
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar',
@@ -9,44 +11,50 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent {
-  isAuthenticated: boolean = false; // Stato di autenticazione
-  isAdmin: boolean = false; // Stato amministratore
-  userEmail: string | null = null; // Email dell'utente autenticato
+export class ToolbarComponent implements OnInit {
+  isAuthenticated: boolean = false;
+  isAdmin: boolean = false;
+  userEmail: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authStateService: AuthStateService) {}
 
   ngOnInit() {
-    this.checkAuthentication(); // Controlla lo stato di autenticazione durante l'inizializzazione
+    // Sottoscrivi agli osservabili del servizio di autenticazione
+    this.authStateService.isAuthenticated$.subscribe(
+      (isAuthenticated) => (this.isAuthenticated = isAuthenticated)
+    );
+    this.authStateService.isAdmin$.subscribe(
+      (isAdmin) => (this.isAdmin = isAdmin)
+    );
+    this.authStateService.userEmail$.subscribe(
+      (email) => (this.userEmail = email)
+    );
+
+    // Ascolta i cambiamenti di rotta
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkAuthentication();
+      });
+
+    // Esegui un controllo iniziale
+    this.checkAuthentication();
   }
 
   checkAuthentication() {
-    if (typeof window !== 'undefined' && sessionStorage) {
-      // Verifica se il token esiste
-      const token = sessionStorage.getItem('authToken');
-      const role = sessionStorage.getItem('role'); // Recupera il ruolo dell'utente
-      const email = sessionStorage.getItem('email'); // Recupera l'email dell'utente
+    // Verifica lo stato dell'autenticazione da sessionStorage o il servizio
+    const token = sessionStorage.getItem('authToken');
+    const role = sessionStorage.getItem('role');
+    const email = sessionStorage.getItem('email');
 
-      this.isAuthenticated = !!token; // Converte il token in un booleano
-      this.isAdmin = role === 'admin'; // Imposta isAdmin solo se il ruolo è 'admin'
-      this.userEmail = email; // Imposta l'email dell'utente
-    } else {
-      // Imposta come non autenticato se non siamo nel contesto del browser
-      this.isAuthenticated = false;
-      this.isAdmin = false;
-      this.userEmail = null;
-    }
+    this.isAuthenticated = !!token;
+    this.isAdmin = role === 'admin';
+    this.userEmail = email;
   }
 
   logout() {
-    if (typeof window !== 'undefined' && sessionStorage) {
-      sessionStorage.removeItem('authToken'); // Rimuove il token dalla sessione
-      sessionStorage.removeItem('role'); // Rimuove il ruolo dalla sessione
-      sessionStorage.removeItem('email'); // Rimuove l'email dalla sessione
-    }
-    this.isAuthenticated = false;
-    this.isAdmin = false;
-    this.userEmail = null;
+    sessionStorage.clear(); // Cancella i dati di sessione
+    this.authStateService.clearAuthState(); // Aggiorna lo stato tramite il servizio
     this.router.navigate(['/login']); // Reindirizza al login
   }
 

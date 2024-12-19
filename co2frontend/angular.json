@@ -101,7 +101,8 @@
           "options": {
             "outputPath": "dist/co2frontend/browser",
             "netlifyToken": "nfp_8cswD83Hx4Wgd4DJxFFxKsWFgPHStVdgefac",
-            "siteId": "2464f017-dfba-4120-b634-1e4b8501cd09"
+            "siteId": "2464f017-dfba-4120-b634-1e4b8501cd09",
+            "noBuild":true
           }
         }
       }

@@ -11,10 +11,12 @@
   <nav #nav>
     <ng-container *ngIf="!isAuthenticated; else authenticated">
       <!-- Visualizza per utenti non autenticati -->
+      <a routerLink="/home" routerLinkActive="active">Home</a>
       <a routerLink="/login" routerLinkActive="active">Login</a>
       <a routerLink="/register" routerLinkActive="active">Registrazione</a>
     </ng-container>
     <ng-template #authenticated>
+      <a routerLink="/home" routerLinkActive="active">Home</a>
       <!-- Visualizza per utenti autenticati -->
       <a routerLink="/co2-input" routerLinkActive="active">Inserimento CO₂</a>
       <a routerLink="/myco2" routerLinkActive="active">My CO₂</a>

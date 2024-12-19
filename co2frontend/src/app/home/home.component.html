@@ -1,0 +1,34 @@
+<div class="home-container">
+    <div class="welcome-section">
+      <h1>Benvenuto su <span class="highlight">Risparmio CO₂</span>!</h1>
+      <p>Inizia il tuo viaggio verso un pianeta più verde.</p>
+      <button 
+        class="cta-button" 
+        routerLink="/login" 
+        *ngIf="!isAuthenticated">
+        Vai al login
+      </button>
+      <p *ngIf="isAuthenticated">
+        Bentornato, esplora il tuo impatto ambientale!
+      </p>
+        <button 
+        class="cta-button" 
+        *ngIf="isAuthenticated"
+        routerLink="/co2-input">
+        Verifica impatto ambientale
+      </button>
+    </div>
+    <div class="info-section">
+      <h2>Perché scegliere <span class="highlight">Risparmio CO₂</span>?</h2>
+      <p>
+        Lo sapevi che ogni piccola azione può fare una grande differenza? Monitora, riduci e comprendi 
+        il tuo impatto ambientale con i nostri strumenti intelligenti.
+      </p>
+      <ul class="features-list">
+        <li>🌍 <strong>Monitoraggio Personalizzato:</strong> Scopri il tuo impatto.</li>
+        <li>🌱 <strong>Consigli Pratici:</strong> Impara come ridurre le emissioni.</li>
+        <li>💡 <strong>Report e Analisi:</strong> Tieni traccia dei tuoi progressi nel tempo.</li>
+      </ul>
+    </div>
+  </div>
+  

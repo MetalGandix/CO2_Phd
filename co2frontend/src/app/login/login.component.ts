@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { ErrorService } from '../services/error.service';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { AuthStateService } from '../services/auth-state.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,7 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false; // Controlla lo spinner
 
-  constructor(private authService: AuthService, private router: Router, private errorService: ErrorService, private toolbar: ToolbarComponent) {}
+  constructor(private authService: AuthService, private router: Router, private errorService: ErrorService, private authStateService: AuthStateService) {}
 
   ngOnInit(): void {
     this.errorMessage = this.errorService.getErrorMessage();
@@ -31,8 +31,8 @@ export class LoginComponent {
       this.errorMessage = 'Per favore, compila tutti i campi.';
       return;
     }
-
-    this.isLoading = true; // Mostra lo spinner
+  
+    this.isLoading = true;
   
     const loginData = { email: this.email, password: this.password };
   
@@ -40,17 +40,16 @@ export class LoginComponent {
       next: (response: any) => {
         console.log('Login successful:', response);
   
-        // Salva il token, l'ID utente e il ruolo nel sessionStorage
         sessionStorage.setItem('authToken', response.token);
-        sessionStorage.setItem('userId', response.userId);
-        sessionStorage.setItem('role', response.role); // Salva il ruolo
+        sessionStorage.setItem('role', response.role);
         sessionStorage.setItem('email', this.email);
+        sessionStorage.setItem('userId', response.userId);
   
-        this.errorMessage = '';
-        this.isLoading = false; // Nascondi lo spinner
-        this.router.navigate(['/co2-input']).then(() => {
-          this.toolbar.checkAuthentication();
-        });
+        // Aggiorna lo stato dell'autenticazione
+        this.authStateService.updateAuthState(true, response.role === 'admin', this.email);
+  
+        this.isLoading = false;
+        this.router.navigate(['/co2-input']);
       },
       error: (error) => {
         console.error('Errore durante il login:', error);
